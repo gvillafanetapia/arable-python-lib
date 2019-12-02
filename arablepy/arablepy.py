@@ -1,5 +1,4 @@
 from base64 import b64encode
-import pandas as pd
 import requests
 
 
@@ -36,21 +35,11 @@ class ArableClient(object):
             raise Exception("Authentication exception: not connected.")
         return True
 
-    def _output(self, url=None, df=False, header=None, params=None):
+    def _output(self, url=None, header=None, params=None):
         r = requests.get(url, headers=header, params=params)
         data = r.json()
         if 200 == r.status_code:
-            if df == True:
-                if isinstance(data, dict):
-                    if 'items' in data.keys():
-                        a = len(data['items'])
-                        return pd.DataFrame([data['items'][i] for i in range(0,a)])
-                    else:
-                        return pd.DataFrame([data])
-                elif isinstance(data, list):
-                    return pd.DataFrame(data)
-            else:
-                return data
+            return data
         else:
             r.raise_for_status()
 
