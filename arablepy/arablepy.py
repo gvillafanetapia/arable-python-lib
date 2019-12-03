@@ -73,7 +73,7 @@ class ArableClient(object):
             raise Exception("Failed to connect:\n{}".format(str(e)))
 
     def devices(self, name=None, order=None, order_by=None, limit=None, page=None, stats=False, battery=False, email=None,
-                days=None, locations=False, find=False, df=False):
+                days=None, locations=False, find=False):
         """ Lists the devices associated with the user's group.
             >>> client.devices()
             :param name: optional; look up a single device by name (serial); ignored if device_id is present
@@ -117,9 +117,9 @@ class ArableClient(object):
 
 
             # r = requests.post(url, headers=self, )
-        return self._output(url=url, df=df, header=self.header, params=params)
+        return self._output(url=url, header=self.header, params=params)
 
-    def data(self, table, df=False, **kwargs):
+    def data(self, table, **kwargs):
         """ Query Arable prod data. One of devices or location must be provided, or no data will be retrieved.
             >>> client.data()
             >>> device="DeviceName"
@@ -157,9 +157,9 @@ class ArableClient(object):
         if not params.get('limit'):
             params['limit'] = '10000'
 
-        return self._output(url=url, df=df, header=self.header, params=params)
+        return self._output(url=url, header=self.header, params=params)
 
-    def schema(self, table=None, df=False):
+    def schema(self, table=None):
         """ See available tables and data dictionary for specific tables
             >>> client.schema()
             :param table: optional; string. See data dictionary for the specified table
@@ -170,9 +170,9 @@ class ArableClient(object):
         url = ArableClient._base_url + "/schemas"
         if table:
             url += "/" + table
-        return self._output(url=url, df=df, header=self.header)
+        return self._output(url=url, header=self.header)
 
-    def locations(self, page=None, limit=None, df=False):
+    def locations(self, page=None, limit=None):
         """ Get all loactions you can access
         """
         self._check_connection()
@@ -185,17 +185,17 @@ class ArableClient(object):
         if limit is not None:
             params['limit'] = limit
 
-        return self._output(url=url, df=df, header=self.header, params=params)
+        return self._output(url=url, header=self.header, params=params)
 
-    def orgs(self, df=False):
+    def orgs(self):
         """
         """
         self._check_connection()
 
         url = ArableClient._base_url + "/orgs"
-        return self._output(url=url, df=df, header=self.header)
+        return self._output(url=url, header=self.header)
 
-    def search(self, name, suggest=False, df=False):
+    def search(self, name, suggest=False):
         """
         """
         self._check_connection()
@@ -207,12 +207,12 @@ class ArableClient(object):
         params = {}
         params['name'] = name
 
-        return self._output(url=url, df=df, header=self.header, params=params)       
+        return self._output(url=url, header=self.header, params=params)       
 
     def team(self):
         pass
 
-    def users(self, page=None, limit=None, df=False):
+    def users(self, page=None, limit=None):
         """
         """
         self._check_connection()
@@ -224,4 +224,4 @@ class ArableClient(object):
             params['page'] = page
         if limit is not None:
             params['limit'] = limit
-        return self._output(url=url, df=df, header=self.header, params=params)
+        return self._output(url=url, header=self.header, params=params)
