@@ -8,9 +8,24 @@ class ArableClient(object):
         >>> client = ArableClient()
         >>> client.connect(email='user@loremipsum.com', password='#@#SS')
     """
+
     _base_url = "https://api-user.arable.cloud/api/v2"
-    _param_options = {"device", "end_time", "format", "limit", "location", "measure", "order", "select", "start_time", "temp"
-                        "pres", "ratio", "size", "speed", "local_time"}
+    _param_options = {
+        "device",
+        "end_time",
+        "format",
+        "limit",
+        "location",
+        "measure",
+        "order",
+        "select",
+        "start_time",
+        "temp" "pres",
+        "ratio",
+        "size",
+        "speed",
+        "local_time",
+    }
 
     def __init__(self):
         self.header = None
@@ -19,7 +34,9 @@ class ArableClient(object):
 
         url = "{0}/devices".format(ArableClient._base_url)
         # utf-8 encode/decode for python3 support
-        cred = b64encode("{0}:{1}".format(email, password).encode('utf-8')).decode('utf-8')
+        cred = b64encode("{0}:{1}".format(email, password).encode("utf-8")).decode(
+            "utf-8"
+        )
         headers = {"Authorization": "Basic " + cred}
 
         r = requests.get(url, headers=headers)
@@ -49,7 +66,6 @@ class ArableClient(object):
 
         url = ArableClient._base_url + "/apikeys"
 
-
     def connect(self, email=None, password=None, apikey=None):
         """ Logs the client in to the API.
             :param email: user email address
@@ -63,7 +79,7 @@ class ArableClient(object):
         # >> > client.connect(apikey=apikey)
 
         if apikey:
-            self.header = {"Authorization": apikey}
+            self.header = {"Authorization": f"Apikey {apikey}"}
             return
         elif not all([email, password]):
             raise Exception("Missing parameter; connect requires email and password")
@@ -72,8 +88,20 @@ class ArableClient(object):
         except Exception as e:
             raise Exception("Failed to connect:\n{}".format(str(e)))
 
-    def devices(self, name=None, order=None, order_by=None, limit=None, page=None, stats=False, battery=False, email=None,
-                days=None, locations=False, find=False):
+    def devices(
+        self,
+        name=None,
+        order=None,
+        order_by=None,
+        limit=None,
+        page=None,
+        stats=False,
+        battery=False,
+        email=None,
+        days=None,
+        locations=False,
+        find=False,
+    ):
         """ Lists the devices associated with the user's group.
             >>> client.devices()
             :param name: optional; look up a single device by name (serial); ignored if device_id is present
@@ -103,18 +131,17 @@ class ArableClient(object):
 
         params = {}
         if order is not None:
-            params['order'] = order
+            params["order"] = order
         if order_by is not None:
-            params['order_by'] = order_by
+            params["order_by"] = order_by
         else:
-            params['order_by'] = 'state'    
+            params["order_by"] = "state"
         if limit is not None:
-            params['limit'] = limit
+            params["limit"] = limit
         if page is not None:
-            params['page'] = page
+            params["page"] = page
         if days is not None:
-            params['days'] = days
-
+            params["days"] = days
 
             # r = requests.post(url, headers=self, )
         return self._output(url=url, header=self.header, params=params)
@@ -148,14 +175,14 @@ class ArableClient(object):
 
         self._check_connection()
 
-        url = ArableClient._base_url + "/data/" + table 
+        url = ArableClient._base_url + "/data/" + table
 
         params = {}
         for param in ArableClient._param_options:
             if kwargs.get(param):
                 params[param] = str(kwargs[param])
-        if not params.get('limit'):
-            params['limit'] = '10000'
+        if not params.get("limit"):
+            params["limit"] = "10000"
 
         return self._output(url=url, header=self.header, params=params)
 
@@ -181,9 +208,9 @@ class ArableClient(object):
 
         params = {}
         if page is not None:
-            params['page'] = page
+            params["page"] = page
         if limit is not None:
-            params['limit'] = limit
+            params["limit"] = limit
 
         return self._output(url=url, header=self.header, params=params)
 
@@ -205,9 +232,9 @@ class ArableClient(object):
             url += "/suggestions"
 
         params = {}
-        params['name'] = name
+        params["name"] = name
 
-        return self._output(url=url, header=self.header, params=params)       
+        return self._output(url=url, header=self.header, params=params)
 
     def team(self):
         pass
@@ -221,7 +248,8 @@ class ArableClient(object):
 
         params = {}
         if page is not None:
-            params['page'] = page
+            params["page"] = page
         if limit is not None:
-            params['limit'] = limit
+            params["limit"] = limit
         return self._output(url=url, header=self.header, params=params)
+
